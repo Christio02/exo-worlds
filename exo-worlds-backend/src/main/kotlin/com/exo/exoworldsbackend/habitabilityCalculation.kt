@@ -8,7 +8,7 @@ fun calculateHabitabilityIndex(
     planetMass: Double,
     orbitalPeriod: Double,
     equilibriumTemperature: Double?,
-    stellarTemperature: Double,
+    stellarTemperature: Int,
     stellarRadius: Double
 ): Double {
     // 1. Planet Size
@@ -30,6 +30,9 @@ fun calculateHabitabilityIndex(
     // 3. Orbital Period and Habitable Zone
     val orbitalPeriodScore = calculateOrbitalPeriodScore(orbitalPeriod, stellarTemperature, stellarRadius)
 
+    if (orbitalPeriodScore == 0.0) {
+        return -1.1
+    }
     // 4. Equilibrium Temperature (if available)
     val temperatureScore = equilibriumTemperature?.let { calculateTemperatureScore(it) } ?: 0.5
 
@@ -44,9 +47,12 @@ fun calculateHabitabilityIndex(
 
 private fun calculateOrbitalPeriodScore(
     orbitalPeriod: Double,
-    stellarTemperature: Double,
+    stellarTemperature: Int,
     stellarRadius: Double
 ): Double {
+    if (stellarTemperature == 0 || stellarRadius == 0.0) {
+        return 0.0;
+    }
     // Calculate the habitable zone boundaries (rough estimation)
     val innerBoundary = 0.75 * sqrt(stellarRadius) * (stellarTemperature / 5778.0).pow(-0.5)
     val outerBoundary = 1.77 * sqrt(stellarRadius) * (stellarTemperature / 5778.0).pow(-0.5)

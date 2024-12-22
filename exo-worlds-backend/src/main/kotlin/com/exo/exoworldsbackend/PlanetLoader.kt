@@ -53,43 +53,19 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
 
     @Transactional
     override fun run(vararg args: String?) {
-        val psQuery = """
-            SELECT pl_name, pl_rade, pl_masse, pl_orbper, pl_eqt, st_teff, st_rad
-            FROM ps
-            WHERE pl_rade BETWEEN 0.5 AND 2.5
-              AND pl_masse BETWEEN 0.1 AND 10
-              AND default_flag = 1
-        """.trimIndent()
 
         val pscompparsQuery = """
             SELECT pl_name, pl_rade, pl_masse, pl_orbper, pl_eqt, st_teff, st_rad
             FROM pscomppars
-            WHERE pl_rade BETWEEN 0.5 AND 2.5
-              AND pl_masse BETWEEN 0.1 AND 10
-              AND default_flag = 1
+            WHERE pl_rade <= 1.8 AND pl_rade >= 0.5
+            AND pl_masse >= 0.0 and pl_masse <= 10.0
         """.trimIndent()
 
-        val toiQuery = """
-            SELECT pl_name, pl_rade, pl_masse, pl_orbper, pl_eqt, st_teff, st_rad
-            FROM toi
-            WHERE pl_rade BETWEEN 0.5 AND 2.5
-              AND pl_masse BETWEEN 0.1 AND 10
-        """.trimIndent()
-
-        val mlQuery = """
-            SELECT pl_name, pl_rade, pl_masse, pl_orbper, pl_eqt, st_teff, st_rad
-            FROM ml
-            WHERE pl_rade BETWEEN 0.5 AND 2.5
-              AND pl_masse BETWEEN 0.1 AND 10
-        """.trimIndent()
 
         val queries = listOf(
-            Pair(psQuery, "ps"),
             Pair(pscompparsQuery, "pscomppars"),
-            Pair(toiQuery, "toi"),
-            Pair(mlQuery, "ml")
 
-        )
+            )
 
         for ((query, tableName) in queries) {
             try {
@@ -120,10 +96,10 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
                 val name = planetData.getString("pl_name")
                 val radius = planetData.getDouble("pl_rade")
                 val mass = planetData.getDouble("pl_masse")
-                val orbitalPeriod = planetData.getDouble("pl_orbper")
+                val orbitalPeriod = planetData.optDouble("pl_orbper", Double.NaN)
                 val eqTemp = planetData.optDouble("pl_eqt", Double.NaN)
-                val starTemp = planetData.getDouble("st_teff")
-                val starRadius = planetData.getDouble("st_rad")
+                val starTemp = planetData.optInt("st_teff", 0)
+                val starRadius = planetData.optDouble("st_rad", 0.0)
 
                 val habitabilityIndex = calculateHabitabilityIndex(
                     planetRadius = radius,
