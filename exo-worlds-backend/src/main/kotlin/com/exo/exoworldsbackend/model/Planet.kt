@@ -22,6 +22,7 @@ data class Planet(
     @Column(nullable = false)
     val imageType: String,
 
+    @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false, columnDefinition = "bytea")
     val imageData: ByteArray,
 

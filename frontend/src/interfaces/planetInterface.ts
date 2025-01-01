@@ -4,5 +4,7 @@ export interface PlanetCard {
   mass: number;
   radius: number;
   habitabilityIndex: number;
+  imageType: string;
   imageData: string;
+  
 }

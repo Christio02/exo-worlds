@@ -1,13 +1,13 @@
 import { useQuery } from '@apollo/client';
 import { GET_PLANETS } from '../graphql/planetQuery';
 import { planets } from '../vars';
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
 const usePlanets = () => {
   const { loading, error, data } = useQuery(GET_PLANETS);
 
 
-  useMemo(() => {
+  useEffect(() => {
     if (data?.planets) {
       planets(data?.planets);
     }

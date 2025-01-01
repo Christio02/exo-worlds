@@ -1,6 +1,7 @@
 package com.exo.exoworldsbackend.utils
 
 import org.springframework.core.io.ClassPathResource
+import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.*
 import javax.imageio.IIOImage
@@ -16,8 +17,13 @@ class ImageUtils {
 
                 ByteArrayOutputStream().use { output ->
                     resource.inputStream.use { input ->
-                        val bufferedImage = ImageIO.read(input)
+                        val originalImage = ImageIO.read(input)
                             ?: throw IllegalStateException("Could not read image: $path")
+
+                        val resizedImage = BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB)
+                        val g2d = resizedImage.createGraphics()
+                        g2d.drawImage(originalImage, 0, 0, 256, 256, null)
+                        g2d.dispose()
 
                         val writer = ImageIO.getImageWritersByFormatName("jpg").next()
                         val ios = ImageIO.createImageOutputStream(output)
@@ -25,10 +31,10 @@ class ImageUtils {
 
                         val writeParam = JPEGImageWriteParam(Locale.getDefault()).apply {
                             compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
-                            compressionQuality = 0.8f
+                            compressionQuality = 0.6f
                         }
 
-                        writer.write(null, IIOImage(bufferedImage, null, null), writeParam)
+                        writer.write(null, IIOImage(originalImage, null, null), writeParam)
                         ios.flush()
                         writer.dispose()
 

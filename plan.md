@@ -153,7 +153,7 @@
   npx tailwindcss init -p
   ```
 
-- Configure `tailwind.config.js` and `postcss.config.js` to include your template paths.
+- Configure `tailwind.config.js` and `postcss.config.cjs` to include your template paths.
 - Add the Tailwind directives to your main CSS file (e.g., `index.css`):
 
   ```css
