@@ -1,12 +1,12 @@
-
-import './App.css'
+import { PlanetGrid } from './components/PlanetGrid.tsx';
 
 function App() {
     return (
-  <div>
-      <h1>hello world!</h1>
-  </div>
-  )
+        <section>
+            <h1>Welcome to exo worlds!</h1>
+            <PlanetGrid />
+        </section>
+    );
 }
 
-export default App
+export default App;
