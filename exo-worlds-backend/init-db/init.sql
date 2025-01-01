@@ -1,4 +1,3 @@
--- init-db/init.sql
-CREATE DATABASE "exo-worlds-test";
-GRANT ALL PRIVILEGES ON DATABASE "exo-worlds-test" TO chrissy;
+CREATE USER chrissy WITH PASSWORD 'test';
+CREATE DATABASE "exo-worlds";
 GRANT ALL PRIVILEGES ON DATABASE "exo-worlds" TO chrissy;

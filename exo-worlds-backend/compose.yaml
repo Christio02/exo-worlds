@@ -4,12 +4,11 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/exo-worlds
+      SPRING_DATASOURCE_URL: jdbc:postgresql://exo-database:5432/exo-worlds
       SPRING_DATASOURCE_USERNAME: chrissy
-      SPRING_DATASOURCE_PASSWORD: kulebane
+      SPRING_DATASOURCE_PASSWORD: test
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     restart: unless-stopped
 
   postgres:
@@ -17,7 +16,7 @@ services:
     container_name: exo-database
     environment:
       POSTGRES_DB: exo-worlds
-      POSTGRES_PASSWORD: kulebane
+      POSTGRES_PASSWORD: test
       POSTGRES_USER: chrissy
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
     ports:

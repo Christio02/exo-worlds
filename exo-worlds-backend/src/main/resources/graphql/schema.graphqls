@@ -9,11 +9,18 @@ type Planet {
     mass: Float!
     radius: Float!
     habitabilityIndex: Float!
-    image: String!
+    imageType: String!
+    imageData: String!
 }
 
-
-
 type Mutation {
-    createPlanet(name: String!, mass: Float!, radius: Float!): Planet
+    createPlanet(
+        name: String!
+        mass: Float!
+        radius: Float!
+        orbitalPeriod: Float!
+        planetTemperature: Float
+        stellarTemperature: Int!
+        stellarRadius: Float!
+    ): Planet
 }
