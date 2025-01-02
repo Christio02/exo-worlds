@@ -1,4 +1,4 @@
 import { makeVar } from '@apollo/client';
-import { PlanetCard } from './interfaces/planetInterface';
+import { PlanetCardProps } from './interfaces/planetInterface';
 
-export const planets = makeVar<PlanetCard[]>([]);
+export const planets = makeVar<PlanetCardProps[]>([]);

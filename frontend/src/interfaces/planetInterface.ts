@@ -1,4 +1,4 @@
-export interface PlanetCard {
+export interface PlanetCardProps {
   id: string;
   name: string;
   mass: number;

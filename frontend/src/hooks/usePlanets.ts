@@ -1,21 +1,25 @@
 import { useQuery } from '@apollo/client';
-import { GET_PLANETS } from '../graphql/planetQuery';
+import {GET_PAGINATED_PLANETS} from '../graphql/planetQuery';
 import { planets } from '../vars';
 import { useEffect } from 'react';
+import { PlanetFilter, SortField, SortDirection } from '@/interfaces/filterTypes';
 
-const usePlanets = () => {
-  const { loading, error, data } = useQuery(GET_PLANETS);
-
+export const usePlanets = (page: number, sortBy?: SortField, sortDirection?: SortDirection, filter?: PlanetFilter) => {
+  const { loading, error, data } = useQuery(GET_PAGINATED_PLANETS, {
+    variables: {
+      page,
+      size: 8,
+      sortBy,
+      sortDirection,
+      filter
+    },
+  });
 
   useEffect(() => {
-    if (data?.planets) {
-      planets(data?.planets);
+    if (data?.paginatedPlanets?.planets) {
+      planets(data.paginatedPlanets.planets);
     }
-  }, [data?.planets]);
+  }, [data?.paginatedPlanets?.planets, page]);
 
-  return { loading, error };
-
-
+  return { loading, error, data };
 };
-
-export default usePlanets;
