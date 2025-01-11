@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlanetCardProps } from "../interfaces/planetInterface";
 
-export const PlanetCard: React.FC<PlanetCardProps> = ({id, name, mass, radius, habitabilityIndex, imageType, imageData}) => {
+export const PlanetCard = ({id, name, mass, radius, habitabilityIndex, imageType, imageData}: PlanetCardProps) => {
     return (
         <div
             key={id}
