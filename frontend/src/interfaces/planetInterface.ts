@@ -6,5 +6,4 @@ export interface PlanetCardProps {
   habitabilityIndex: number;
   imageType: string;
   imageData: string;
-  
 }

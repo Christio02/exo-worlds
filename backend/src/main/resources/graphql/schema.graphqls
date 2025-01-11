@@ -21,15 +21,9 @@ input PlanetFilter {
 }
 
 type Query {
-  planets: [Planet!]
+  planets(sortBy: SortField, sortDirection: SortDirection, filter: PlanetFilter): [Planet!]
   planet(id: ID!): Planet
-  paginatedPlanets(
-    page: Int!
-    size: Int
-    sortBy: SortField = NAME
-    sortDirection: SortDirection = ASC
-    filter: PlanetFilter
-  ): PagedPlanets!}
+}
 
 type Planet {
   id: ID!

@@ -19,45 +19,46 @@ import java.util.*
 class PlanetController(private val planetRepository: PlanetRepository) {
 
     @QueryMapping
-    fun planets(): List<PlanetDTO> {
-        val allPlanets = planetRepository.findAll()
-        println("Found ${allPlanets.size} planets")
-        return allPlanets.map {
-            println("Converting planet: ${it.name}")
-            it.toDTO()
+    fun planets(
+        @Argument filter: PlanetFilter?,
+        @Argument sortBy: SortField?,
+        @Argument sortDirection: SortDirection?
+    ): List<PlanetDTO> {
+        val sort = when (sortBy) {
+            SortField.NAME -> Sort.by(
+                if (sortDirection == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC,
+                "name"
+            )
+            SortField.MASS -> Sort.by(
+                if (sortDirection == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC,
+                "mass"
+            )
+            SortField.RADIUS -> Sort.by(
+                if (sortDirection == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC,
+                "radius"
+            )
+            SortField.HABITABILITY_INDEX -> Sort.by(
+                if (sortDirection == SortDirection.DESC) Sort.Direction.DESC else Sort.Direction.ASC,
+                "habitabilityIndex"
+            )
+            null -> Sort.by(Sort.Direction.ASC, "id")
         }
+
+        val specification = filter?.let { buildSpecification(it) }
+
+        val planets = if (specification != null) {
+            planetRepository.findAll(specification, sort)
+        } else {
+            planetRepository.findAll(sort)
+        }
+
+        return planets.map { it.toDTO() }
     }
 
     @QueryMapping
     fun planet(@Argument id: String): PlanetDTO? =
         planetRepository.findById(id.toLong()).map { it.toDTO() }.orElse(null)
 
-    @QueryMapping
-    fun paginatedPlanets(
-        @Argument page: Int,
-        @Argument size: Int = 10,
-        @Argument sortBy: SortField = SortField.NAME,
-        @Argument sortDirection: SortDirection = SortDirection.ASC,
-        @Argument filter: PlanetFilter? = null
-    ): PagedPlanets {
-        val sort = when (sortBy) {
-            SortField.NAME -> Sort.by("name")
-            SortField.MASS -> Sort.by("mass")
-            SortField.RADIUS -> Sort.by("radius")
-            SortField.HABITABILITY_INDEX -> Sort.by("habitabilityIndex")
-        }.let { if (sortDirection == SortDirection.DESC) it.descending() else it.ascending() }
-
-        val spec = filter?.let { buildSpecification(it) } ?: Specification.where(null)
-        val pageable = PageRequest.of(page, size, sort)
-        val result = planetRepository.findAll(spec, pageable)
-
-        return PagedPlanets(
-            planets = result.content.map { it.toDTO() },
-            totalPages = result.totalPages,
-            totalElements = result.totalElements,
-            currentPage = result.number
-        )
-    }
 
     private fun buildSpecification(filter: PlanetFilter): Specification<Planet> {
         return Specification<Planet> { root, _, criteriaBuilder ->
