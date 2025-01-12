@@ -1,4 +1,3 @@
-// usePlanets.ts
 import { useQuery } from '@apollo/client';
 import { GET_PLANETS } from '../graphql/planetQuery';
 import { planets } from '../vars';

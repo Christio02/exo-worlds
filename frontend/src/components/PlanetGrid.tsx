@@ -14,7 +14,7 @@ export const PlanetGrid = () => {
   const { loading, error, data } = usePlanets(sort.sortBy, sort.sortDirection, filter);
   const currentPlanets = useReactiveVar(planets);
   const observer = useRef<IntersectionObserver | null>(null);
-
+  it;
   const lastPlanetRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (loading) return;

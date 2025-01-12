@@ -44,13 +44,6 @@ data class Planet(
     }
 }
 
-data class PagedPlanets(
-    val planets: List<PlanetDTO>,
-    val totalPages: Int,
-    val totalElements: Long,
-    val currentPage: Int
-)
-
 data class PlanetFilter(
     val minMass: Double? = null,
     val maxMass: Double? = null,

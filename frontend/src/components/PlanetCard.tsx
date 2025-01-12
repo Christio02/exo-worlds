@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { PlanetCardProps } from '../interfaces/planetInterface';
 
 export const PlanetCard = memo(
