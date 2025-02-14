@@ -3,7 +3,7 @@ import { PlanetGrid } from './components/PlanetGrid';
 function App() {
   return (
     <div className="min-h-screen relative">
-      <div className="fixed inset-0 bg-gradient-to-b from-slate-900 via-blue-900 to-slate-900 z-0" />
+      <div className="fixed inset-0 bg-linear-to-b from-slate-900 via-blue-900 to-slate-900 z-0" />
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-8">
           <header className="text-center mb-12">

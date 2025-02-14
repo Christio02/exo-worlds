@@ -64,7 +64,7 @@ export const FilterSearch = ({
           placeholder="Search by name"
           value={filter.nameContains || ''}
           onChange={handleNameChange}
-          className="flex-grow bg-slate-700 text-blue-100 placeholder-blue-300 border-blue-500"
+          className="grow bg-slate-700 text-blue-100 placeholder-blue-300 border-blue-500"
         />
         <Select onValueChange={handleSortChange} value={sort.sortBy}>
           <SelectTrigger className="w-full md:w-[180px] bg-slate-700 text-blue-100 border-blue-500">

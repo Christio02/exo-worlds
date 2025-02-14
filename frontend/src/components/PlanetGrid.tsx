@@ -1,10 +1,10 @@
-import { useReactiveVar } from '@apollo/client';
-import { planets } from '../vars';
-import { usePlanets } from '../hooks/usePlanets';
-import { PlanetCard } from './PlanetCard';
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { FilterSearch } from './FilterSearch';
 import { PlanetFilter, SortOptions } from '@/interfaces/filterTypes';
+import { useReactiveVar } from '@apollo/client';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePlanets } from '../hooks/usePlanets';
+import { planets } from '../vars';
+import { FilterSearch } from './FilterSearch';
+import { PlanetCard } from './PlanetCard';
 
 export const PlanetGrid = () => {
   const [filter, setFilter] = useState<PlanetFilter>({});
@@ -14,7 +14,6 @@ export const PlanetGrid = () => {
   const { loading, error, data } = usePlanets(sort.sortBy, sort.sortDirection, filter);
   const currentPlanets = useReactiveVar(planets);
   const observer = useRef<IntersectionObserver | null>(null);
-  it;
   const lastPlanetRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (loading) return;
