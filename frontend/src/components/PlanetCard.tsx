@@ -2,7 +2,16 @@ import { memo } from 'react';
 import { PlanetCardProps } from '../interfaces/planetInterface';
 
 export const PlanetCard = memo(
-  ({ id, name, mass, radius, habitabilityIndex, imageType, imageData }: PlanetCardProps) => {
+  ({
+    id,
+    name,
+    mass,
+    radius,
+    planetType,
+    habitabilityIndex,
+    imageType,
+    imageData,
+  }: PlanetCardProps) => {
     return (
       <div
         key={id}
@@ -27,6 +36,10 @@ export const PlanetCard = memo(
           <li className="flex justify-between">
             <span className="font-medium text-blue-200">Radius:</span>
             <span>{radius.toFixed(2)} Earth radii</span>
+          </li>
+          <li className="flex justify-between">
+            <span className="font-medium text-blue-200">Planet type:</span>
+            <span>{planetType}</span>
           </li>
           <li className="flex justify-between">
             <span className="font-medium text-blue-200">Habitability:</span>

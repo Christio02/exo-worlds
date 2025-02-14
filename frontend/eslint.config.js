@@ -11,6 +11,11 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
+    settings: {
+      react: {
+        version: 'detect', // Use the string "detect" to auto-detect React version
+      },
+    },
     rules: {
       'react/react-in-jsx-scope': 'off', // Disable rule for React 17+
       'react/no-deprecated': 'warn',

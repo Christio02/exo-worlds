@@ -17,6 +17,9 @@ data class Planet(
     @Column(nullable = false)
     val radius: Double,
 
+    @Column(name = "planet_type", nullable = false)
+    val planetType: String,
+
     @Column(name = "habitability_index", nullable = false)
     val habitabilityIndex: Double,
 

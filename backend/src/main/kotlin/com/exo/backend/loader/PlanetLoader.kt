@@ -48,6 +48,31 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
         }
     }
 
+    private fun determinePlanetType(
+        planetMass: Double,
+        planetRadius: Double,
+        orbitalPeriod: Double,
+        insolation: Double? = null
+    ): String {
+        val baseType = when {
+            planetMass > 50.0 || planetRadius > 10.0 -> "Gas Giant"
+            planetMass in 10.0..50.0 || planetRadius in 2.5..4.0 -> "Mini-Neptune"
+            planetMass in 2.0..10.0 || planetRadius in 1.5..2.5 -> "Super-Earth"
+            planetMass < 2.0 && planetRadius < 1.5 -> "Rocky"
+            else -> "Unknown"
+        }
+
+        val modifier = when {
+            insolation != null && insolation > 5.0 -> "Hot"
+            insolation != null && insolation < 0.2 -> "Cold"
+            orbitalPeriod < 5.0 -> "Hot"    // Very close to the star.
+            orbitalPeriod > 50.0 -> "Cold"  // Far from the star.
+            else -> ""
+        }
+
+        return if (modifier.isNotEmpty()) "$modifier $baseType" else baseType
+    }
+
     private fun processPlanetData(url: String) {
         try {
             val connection = URI(url).toURL().openConnection()
@@ -78,7 +103,6 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
             val name = planetData.getString("pl_name") ?: return
             if (planetRepository.existsPlanetByName(name)) return
 
-            // Required parameters
             val radius = planetData.getDouble("pl_rade")
             val mass = planetData.getDouble("pl_masse")
             val orbitalPeriod = planetData.optDouble("pl_orbper", Double.NaN)
@@ -86,12 +110,11 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
             val starTemp = planetData.optInt("st_teff", 0)
             val starRadius = planetData.optDouble("st_rad", 0.0)
 
-            // Additional parameters for improved habitability calculation
             val stellarMass = planetData.optDouble("st_mass", Double.NaN)
             val stellarMetallicity = planetData.optDouble("st_met", Double.NaN)
             val planetDensity = planetData.optDouble("pl_dens", Double.NaN)
-            val insolation = planetData.optDouble("pl_insol", Double.NaN)
-            val stellarLuminosity = planetData.optDouble("st_lum", Double.NaN)
+            val insolationRaw = planetData.optDouble("pl_insol", Double.NaN)
+            val insolation = if (insolationRaw.isNaN()) null else insolationRaw
 
             val habitabilityIndex = calculateHabitabilityIndex(
                 planetRadius = radius,
@@ -103,7 +126,14 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
                 stellarMass = if (stellarMass.isNaN()) null else stellarMass,
                 stellarMetallicity = if (stellarMetallicity.isNaN()) null else stellarMetallicity,
                 planetDensity = if (planetDensity.isNaN()) null else planetDensity,
-                insolation = if (insolation.isNaN()) null else insolation
+                insolation = insolation
+            )
+
+            val planetType = determinePlanetType(
+                planetMass = mass,
+                planetRadius = radius,
+                orbitalPeriod = orbitalPeriod,
+                insolation = insolation
             )
 
             val (imageData, imageType) = GetPlanetImage.getImage(radius, eqTemp)
@@ -113,12 +143,13 @@ class PlanetLoader @Autowired constructor(private val planetRepository: PlanetRe
                 radius = radius,
                 mass = mass,
                 habitabilityIndex = habitabilityIndex,
+                planetType = planetType,
                 imageData = imageData,
                 imageType = imageType,
             )
 
             planetRepository.save(planet)
-            println("Successfully added planet: ${planet.name}")
+            println("Successfully added planet: ${planet.name} as $planetType")
         } catch (e: Exception) {
             println("Error processing planet ${planetData.optString("pl_name", "unknown")}: ${e.message}")
         }

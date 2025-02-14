@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -8,13 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { PlanetFilter, SortOptions, SortField, SortDirection } from '../interfaces/filterTypes';
+import React, { useEffect, useState } from 'react';
+import { PlanetFilter, SortDirection, SortField, SortOptions } from '../interfaces/filterTypes';
 
 interface FilterSearchProps {
   onFilterChange: (filter: PlanetFilter) => void;
@@ -64,7 +64,7 @@ export const FilterSearch = ({
           placeholder="Search by name"
           value={filter.nameContains || ''}
           onChange={handleNameChange}
-          className="grow bg-slate-700 text-blue-100 placeholder-blue-300 border-blue-500"
+          className="grow bg-slate-700 text-blue-100 placeholder-blue-300 border-blue-500 text-lg"
         />
         <Select onValueChange={handleSortChange} value={sort.sortBy}>
           <SelectTrigger className="w-full md:w-[180px] bg-slate-700 text-blue-100 border-blue-500">

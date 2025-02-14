@@ -21,7 +21,11 @@ input PlanetFilter {
 }
 
 type Query {
-  planets(sortBy: SortField, sortDirection: SortDirection, filter: PlanetFilter): [Planet!]
+  planets(
+    sortBy: SortField
+    sortDirection: SortDirection
+    filter: PlanetFilter
+  ): [Planet!]
   planet(id: ID!): Planet
 }
 
@@ -30,6 +34,7 @@ type Planet {
   name: String!
   mass: Float!
   radius: Float!
+  planetType: String!
   habitabilityIndex: Float!
   imageType: String!
   imageData: String!

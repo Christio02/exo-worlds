@@ -3,6 +3,7 @@ export interface PlanetCardProps {
   name: string;
   mass: number;
   radius: number;
+  planetType: string;
   habitabilityIndex: number;
   imageType: string;
   imageData: string;

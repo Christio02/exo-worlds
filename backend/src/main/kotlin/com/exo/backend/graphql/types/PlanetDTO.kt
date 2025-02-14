@@ -5,6 +5,7 @@ data class PlanetDTO(
     val name: String,
     val mass: Double,
     val radius: Double,
+    val planetType: String,
     val habitabilityIndex: Double,
     val imageType: String,
     val imageData: String
