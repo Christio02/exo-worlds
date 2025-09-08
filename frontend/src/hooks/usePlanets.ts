@@ -1,8 +1,8 @@
+import { PlanetFilter, SortDirection, SortField } from '@/interfaces/filterTypes';
 import { useQuery } from '@apollo/client';
+import { useEffect } from 'react';
 import { GET_PLANETS } from '../graphql/planetQuery';
 import { planets } from '../vars';
-import { useEffect } from 'react';
-import { PlanetFilter, SortField, SortDirection } from '@/interfaces/filterTypes';
 
 export const usePlanets = (
   sortBy?: SortField,

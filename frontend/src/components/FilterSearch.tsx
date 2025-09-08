@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -8,13 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
-import { PlanetFilter, SortOptions, SortField, SortDirection } from '../interfaces/filterTypes';
+import { Slider } from '@/components/ui/slider';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { PlanetFilter, SortDirection, SortField, SortOptions } from '../interfaces/filterTypes';
 
 interface FilterSearchProps {
   onFilterChange: (filter: PlanetFilter) => void;
@@ -32,6 +33,20 @@ export const FilterSearch = ({
   const [filter, setFilter] = useState<PlanetFilter>(initialFilter);
   const [sort, setSort] = useState<SortOptions>(initialSort);
 
+  // Slider ranges
+  const [massRange, setMassRange] = useState<[number, number]>([
+    initialFilter.minMass ?? 0.1,
+    initialFilter.maxMass ?? 10.0,
+  ]);
+  const [radiusRange, setRadiusRange] = useState<[number, number]>([
+    initialFilter.minRadius ?? 0.5,
+    initialFilter.maxRadius ?? 5.0,
+  ]);
+  const [habitabilityRange, setHabitabilityRange] = useState<[number, number]>([
+    (initialFilter.minHabitabilityIndex ?? 0) * 100,
+    (initialFilter.maxHabitabilityIndex ?? 1) * 100,
+  ]);
+
   useEffect(() => {
     onFilterChange(filter);
   }, [filter, onFilterChange]);
@@ -40,12 +55,7 @@ export const FilterSearch = ({
     onSortChange(sort);
   }, [sort, onSortChange]);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFilter(prev => ({ ...prev, [name]: value === '' ? undefined : Number(value) }));
-  };
-
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFilter(prev => ({ ...prev, nameContains: e.target.value }));
   };
 
@@ -55,6 +65,36 @@ export const FilterSearch = ({
 
   const handleSortDirectionChange = (direction: SortDirection) => {
     setSort(prev => ({ ...prev, sortDirection: direction }));
+  };
+
+  const handleMassRangeChange = (values: number[]) => {
+    const [min, max] = values;
+    setMassRange([min, max]);
+    setFilter(prev => ({
+      ...prev,
+      minMass: min === 0.1 ? undefined : min,
+      maxMass: max === 10.0 ? undefined : max,
+    }));
+  };
+
+  const handleRadiusRangeChange = (values: number[]) => {
+    const [min, max] = values;
+    setRadiusRange([min, max]);
+    setFilter(prev => ({
+      ...prev,
+      minRadius: min === 0.5 ? undefined : min,
+      maxRadius: max === 5.0 ? undefined : max,
+    }));
+  };
+
+  const handleHabitabilityRangeChange = (values: number[]) => {
+    const [min, max] = values;
+    setHabitabilityRange([min, max]);
+    setFilter(prev => ({
+      ...prev,
+      minHabitabilityIndex: min === 0 ? undefined : min / 100,
+      maxHabitabilityIndex: max === 100 ? undefined : max / 100,
+    }));
   };
 
   return (
@@ -93,89 +133,51 @@ export const FilterSearch = ({
             Advanced Filters
           </AccordionTrigger>
           <AccordionContent className="px-4 pb-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-6">
+              {/* Mass Range Slider */}
               <div>
-                <Label htmlFor="minMass" className="text-blue-200">
-                  Min Mass
+                <Label className="text-blue-200 text-sm font-medium">
+                  Mass Range: {massRange[0].toFixed(1)} - {massRange[1].toFixed(1)} Earth masses
                 </Label>
-                <Input
-                  id="minMass"
-                  name="minMass"
-                  type="number"
-                  value={filter.minMass || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Min mass"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
+                <Slider
+                  value={massRange}
+                  onValueChange={handleMassRangeChange}
+                  min={0.1}
+                  max={10.0}
+                  step={0.1}
+                  className="mt-2"
                 />
               </div>
+
+              {/* Radius Range Slider */}
               <div>
-                <Label htmlFor="maxMass" className="text-blue-200">
-                  Max Mass
+                <Label className="text-blue-200 text-sm font-medium">
+                  Radius Range: {radiusRange[0].toFixed(1)} - {radiusRange[1].toFixed(1)} Earth
+                  radii
                 </Label>
-                <Input
-                  id="maxMass"
-                  name="maxMass"
-                  type="number"
-                  value={filter.maxMass || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Max mass"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
+                <Slider
+                  value={radiusRange}
+                  onValueChange={handleRadiusRangeChange}
+                  min={0.5}
+                  max={5.0}
+                  step={0.1}
+                  className="mt-2"
                 />
               </div>
+
+              {/* Habitability Range Slider */}
               <div>
-                <Label htmlFor="minRadius" className="text-blue-200">
-                  Min Radius
+                <Label className="text-blue-200 text-sm font-medium">
+                  Habitability Range: {habitabilityRange[0].toFixed(0)}% -{' '}
+                  {habitabilityRange[1].toFixed(0)}%
                 </Label>
-                <Input
-                  id="minRadius"
-                  name="minRadius"
-                  type="number"
-                  value={filter.minRadius || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Min radius"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="maxRadius" className="text-blue-200">
-                  Max Radius
-                </Label>
-                <Input
-                  id="maxRadius"
-                  name="maxRadius"
-                  type="number"
-                  value={filter.maxRadius || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Max radius"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="minHabitabilityIndex" className="text-blue-200">
-                  Min Habitability
-                </Label>
-                <Input
-                  id="minHabitabilityIndex"
-                  name="minHabitabilityIndex"
-                  type="number"
-                  value={filter.minHabitabilityIndex || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Min habitability"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
-                />
-              </div>
-              <div>
-                <Label htmlFor="maxHabitabilityIndex" className="text-blue-200">
-                  Max Habitability
-                </Label>
-                <Input
-                  id="maxHabitabilityIndex"
-                  name="maxHabitabilityIndex"
-                  type="number"
-                  value={filter.maxHabitabilityIndex || ''}
-                  onChange={handleFilterChange}
-                  placeholder="Max habitability"
-                  className="bg-slate-600 text-blue-100 placeholder-blue-300 border-blue-500"
+                <Slider
+                  value={habitabilityRange}
+                  onValueChange={handleHabitabilityRangeChange}
+                  min={0}
+                  max={100}
+                  step={1}
+                  className="mt-2"
                 />
               </div>
             </div>
