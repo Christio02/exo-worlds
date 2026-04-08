@@ -6,7 +6,7 @@ export const PlanetCard = memo(
     return (
       <div
         key={id}
-        className="flex flex-col items-center p-6 bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
+        className="flex flex-col items-center p-6 bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105"
       >
         {imageData ? (
           <img
